@@ -1,111 +1,111 @@
-let inputbox= document.getElementById("attendance");
-let btnbox= document.getElementById("addStudent");
-let container= document.getElementById("studentContainer");
-//studeent ak arry ha 
-//student ak html div ha
+let inputbox = document.getElementById("attendance");
+let btnbox = document.getElementById("addStudent");
+let container = document.getElementById("studentContainer");
+
+// Local Storage se data load karo
 let students = JSON.parse(localStorage.getItem("students")) || [];
-function showStudent(name,index){
-    let student = document.createElement("div"); // name div creat
-    // student.textContent = inputbox.value;
-    
-    let nameSpan=document.createElement("span"); //single name store inspan
-    nameSpan.textContent= name;
 
-    let deletbtn = document.createElement("button");//btn create
-    deletbtn.textContent="Delete"; //name of btn
-    deletbtn.classList.add("deleteBtn");//css class k liye
+// Student show karne ka function
+function showStudent(name, index) {
 
+    let student = document.createElement("div");
 
-    deletbtn.addEventListener("click",function(){ //code runafter click
-        students.splice(index,1); //  delet index 1
+    let nameSpan = document.createElement("span");
+    nameSpan.textContent = name;
 
-        localStorage.setItem("students",JSON.stringify(students)); //arry into string then save in brwser
-        container.innerHTML="";
-        students.forEach(function(name,index){ //data in function
-            showStudent(name,index);// all student show
-});
-        
+    // Delete Button
+    let deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.classList.add("deleteBtn");
+
+    deleteBtn.addEventListener("click", function () {
+
+        students.splice(index, 1);
+
+        localStorage.setItem("students", JSON.stringify(students));
+
+        container.innerHTML = "";
+
+        students.forEach(function (name, index) {
+            showStudent(name, index);
+        });
+
     });
 
-    let editbtn = document.createElement("button"); //edit btn banana
-    editbtn.textContent="Edit"; //btn ka name
-    editbtn.classList.add("editBtn"); // css style
+    // Edit Button
+    let editBtn = document.createElement("button");
+    editBtn.textContent = "Edit";
+    editBtn.classList.add("editBtn");
 
-    editbtn.addEventListener("click", function(){  //run after click
-        let editinput=document.createElement("input"); // neme name from user
-        editinput.type ="text";
-        editinput.value= nameSpan.textContent;
-        student.replaceChild(editinput,nameSpan);
-        editbtn.textContent="Save";
-        editbtn.onclick=function(){
-            let updatedName = editinput.value.trim();
+    editBtn.addEventListener("click", function () {
 
-            if (updatedName==="") {
+        // Agar Edit mode me hain
+        if (editBtn.textContent === "Edit") {
+
+            let editInput = document.createElement("input");
+            editInput.type = "text";
+            editInput.value = nameSpan.textContent;
+
+            student.replaceChild(editInput, nameSpan);
+
+            editBtn.textContent = "Save";
+
+            // Input ko button ke sath save kar diya
+            editBtn.editInput = editInput;
+
+        }
+
+        // Agar Save mode me hain
+        else {
+
+            let updatedName = editBtn.editInput.value.trim();
+
+            if (updatedName === "") {
                 alert("Name cannot be empty!");
                 return;
             }
-            student[index]= updatedName;
-            localStorage.setItem("student", JSON.stringify(student));
-            nameSpan.textContent=updatedName;
-            student. replaceChild(nameSpan,editinput);
-            editbtn.textContent="Edit";
-            showEdit();
-    };
-    function showEdit(){
-        editbtn.onclick=null;
-        editbtn.addEventListener("click",function(){
-            let editinput = document.createElement("input");
-            editinput.type="text";
-            editinput.value= nameSpan.textContent;
-            student.replaceChild(editinput,namespan);
-            editbtn.textContent = "Save";
-            editbtn.onclick = function () {
 
-                let updatedName = editInput.value.trim();
+            students[index] = updatedName;
 
-                if (updatedName === "") {
-                    alert("Name cannot be empty!");
-                    return;
-                }
+            localStorage.setItem("students", JSON.stringify(students));
 
-                students[index] = updatedName;
-                localStorage.setItem("students", JSON.stringify(students));
+            nameSpan.textContent = updatedName;
 
-                nameSpan.textContent = updatedName;
+            student.replaceChild(nameSpan, editBtn.editInput);
 
-                student.replaceChild(nameSpan, editInput);
+            editBtn.textContent = "Edit";
+        }
 
-                
-                editbtn.textContent = "Edit";
+    });
 
-                showEdit();
-            };
-        }, { once: true });
-    }
-},{once:true});
-    
+    // Student div me sab add karo
+    student.appendChild(nameSpan);
+    student.appendChild(deleteBtn);
+    student.appendChild(editBtn);
 
-    container.appendChild(student);  // students ko show karo
-     
-
-    student.appendChild(nameSpan);  // span chaild of dive ko dive ka andar rakhna
-    student.appendChild(deletbtn);  //deletebtn ko div ka andar add karo
-    student.appendChild(editbtn); //editbtn ko dive ka andar add karo
+    container.appendChild(student);
 
 }
 
-btnbox.addEventListener("click",function(){ // add student click karo or code run ho jay ga
-    if(inputbox.value===""){ //agar user empty ya null input da to error show kar0
-        alert("Erroe!plz add student");
-        return; //bad wala code ni chaly ga
+// Add Student
+btnbox.addEventListener("click", function () {
+
+    if (inputbox.value.trim() === "") {
+        alert("Please enter student name.");
+        return;
     }
-    students.push(inputbox.value);  // arry ka end ma new add karo
-    localStorage.setItem("students", JSON.stringify(students)); // arry ko string ma change karo
-    showStudent(inputbox.value,students.length-1); //add student ko show karo
-    inputbox.value=""; //inputbox ko kahali karo
+
+    students.push(inputbox.value.trim());
+
+    localStorage.setItem("students", JSON.stringify(students));
+
+    showStudent(inputbox.value.trim(), students.length - 1);
+
+    inputbox.value = "";
 
 });
-students.forEach(function(name,index){ // har student pa function km kryna cahiye
-    showStudent(name,index); // sab student ko chow kro
 
+// Refresh ke baad sab students dikhao
+students.forEach(function (name, index) {
+    showStudent(name, index);
 });
