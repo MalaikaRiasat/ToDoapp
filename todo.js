@@ -32,13 +32,56 @@ function showStudent(name,index){
     editbtn.classList.add("editBtn"); // css style
 
     editbtn.addEventListener("click", function(){  //run after click
-        let updateName=prompt("Enter new name"); // neme name from user
-        if(updateName){ // ckack karna ka empty ho ni di value
-            students[index]=updateName; //change from index
-            localStorage.setItem("students",JSON.stringify(students));//arry ko string m 
-        }
-        nameSpan.textContent= updateName; // new name on screen
-    });
+        let editinput=document.createElement("input"); // neme name from user
+        editinput.type ="text";
+        editinput.value= nameSpan.textContent;
+        student.replaceChild(editinput,nameSpan);
+        editbtn.textContent="Save";
+        editbtn.onclick=function(){
+            let updatedName = editinput.value.trim();
+
+            if (updatedName==="") {
+                alert("Name cannot be empty!");
+                return;
+            }
+            student[index]= updatedName;
+            localStorage.setItem("student", JSON.stringify(student));
+            nameSpan.textContent=updatedName;
+            student. replaceChild(nameSpan,editinput);
+            editbtn.textContent="Edit";
+            showEdit();
+    };
+    function showEdit(){
+        editbtn.onclick=null;
+        editbtn.addEventListener("click",function(){
+            let editinput = document.createElement("input");
+            editinput.type="text";
+            editinput.value= nameSpan.textContent;
+            student.replaceChild(editinput,namespan);
+            editbtn.textContent = "Save";
+            editbtn.onclick = function () {
+
+                let updatedName = editInput.value.trim();
+
+                if (updatedName === "") {
+                    alert("Name cannot be empty!");
+                    return;
+                }
+
+                students[index] = updatedName;
+                localStorage.setItem("students", JSON.stringify(students));
+
+                nameSpan.textContent = updatedName;
+
+                student.replaceChild(nameSpan, editInput);
+
+                editbtn.textContent = "Edit";
+
+                showEdit();
+            };
+        }, { once: true });
+    }
+},{once:true});
     
 
     container.appendChild(student);  // students ko show karo
