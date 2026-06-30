@@ -75,6 +75,7 @@ function showStudent(name,index){
 
                 student.replaceChild(nameSpan, editInput);
 
+                
                 editbtn.textContent = "Edit";
 
                 showEdit();
