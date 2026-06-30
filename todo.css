@@ -4,6 +4,7 @@ body {
     background-color: hwb(220 98% 1%);
     text-align: center;
     margin-top: 100;
+    display: flex;
 }
 h1{
     color: hsla(233, 98%, 25%, 0.975);
